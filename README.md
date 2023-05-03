@@ -161,7 +161,9 @@ You can deploy this project using:
 
 👤 **Author1**
 
-- GitHub: [@Jubaer](sami.u.tufail)
+- GitHub: [@sami](sami.u.tufail)
+👤 **Author2**
+- GitHub: [@Beyk](Beyk)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
