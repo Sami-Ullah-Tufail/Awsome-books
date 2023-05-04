@@ -1,77 +1,112 @@
-class BookCollection {
+/* eslint-disable no-unused-expressions */
+/* eslint-disable class-methods-use-this */
+/* eslint-disable max-classes-per-file */
+class BookList {
   constructor() {
-    this.books = [];
-    this.titleInput = document.getElementById('title');
-    this.authorInput = document.getElementById('author');
-    this.addButton = document.getElementById('add');
-    this.removeButton = document.getElementById('remove');
-    this.booksList = document.querySelector('#books ul');
-
-    // Load the saved books from localStorage
-    if (localStorage.getItem('books')) {
-      this.books = JSON.parse(localStorage.getItem('books'));
-      this.renderBooks();
-    }
-
-    // Add event listeners to the buttons
-    this.addButton.addEventListener('click', () => {
-      const title = this.titleInput.value;
-      const author = this.authorInput.value;
-      this.addBook(title, author);
-      localStorage.setItem('books', JSON.stringify(this.books));
-      this.titleInput.value = '';
-      this.authorInput.value = '';
-    });
-
-    this.booksList.addEventListener('click', (event) => {
-      if (event.target.tagName === 'BUTTON') {
-        const index = parseInt(event.target.dataset.index, 10);
-        this.removeBook(index);
-        localStorage.setItem('books', JSON.stringify(this.books));
-      }
-    });
-
-    this.removeButton.addEventListener('click', () => {
-      this.books = [];
-      this.renderBooks();
-      localStorage.setItem('books', JSON.stringify(this.books));
-    });
-  }
-
-  renderBooks() {
-    this.booksList.innerHTML = '';
-    this.books.forEach((book, index) => {
-      const listItem = document.createElement('li');
-      listItem.classList.add('list-items');
-      if (index % 2 === 0) {
-        listItem.classList.add('gray-bg');
-      }
-      listItem.innerHTML = `${book.title} by "${book.author}"<button data-index="${index}">Remove</button>`;
-      this.booksList.appendChild(listItem);
-    });
-  }
-
-  addBook(title, author) {
-    // Trim whitespace from the title and author inputs
-    title = title.trim();
-    author = author.trim();
-
-    // Check if either input is empty or contains only whitespace
-    if (!title || !author) {
-      return;
-    }
-
-    const book = { title, author };
-    this.books.push(book);
-    this.renderBooks();
-  }
-
-  removeBook(index) {
-    this.books = this.books.filter((book, i) => i !== index);
-    this.renderBooks();
+    this.list = [];
+    return this.list;
   }
 }
 
-const myBookCollection = new BookCollection();
+let Booklist = new BookList();
 
-myBookCollection.init();
+class Book {
+  constructor() {
+    this.index;
+    this.author;
+    this.title;
+  }
+
+  getBooks() {
+    Booklist = JSON.parse(localStorage.getItem('booklist'));
+    return Booklist;
+  }
+
+  storeBooks() {
+    const booklist = JSON.stringify(Booklist);
+    localStorage.setItem('booklist', booklist);
+  }
+
+  addBook(title, author) {
+    if (!Booklist) {
+      Booklist = [];
+      this.index = 0;
+    } else {
+      const lastElemIndex = Booklist.slice(-1).pop().index;
+      this.index = lastElemIndex + 1;
+    }
+    this.author = author;
+    this.title = title;
+    Booklist.push(this);
+    this.storeBooks();
+  }
+
+  removeBook(elemIndex) {
+    Booklist = Booklist.filter((book) => parseInt(book.index, 10) !== parseInt(elemIndex, 10));
+    this.storeBooks();
+  }
+}
+
+function printBookList(bookList, container) {
+  container.innerHTML = '';
+  bookList.forEach((element) => {
+    const listItem = document.createElement('li');
+    const tags = `<p>"${element.index} - ${element.title}" by ${element.author}</p>        
+        <button class="remove-btn">Remove</button>
+        `;
+    listItem.innerHTML = tags;
+    container.appendChild(listItem);
+
+    const removeBtn = listItem.querySelector('.remove-btn');
+    removeBtn.addEventListener('click', () => {
+      const books = new Book();
+      listItem.remove();
+      books.removeBook(element.index);
+    });
+  });
+}
+const htmlContainer = document.querySelector('#book-list ul');
+const addBookBtn = document.forms.book['btn-add'];
+
+addBookBtn.addEventListener('click', (event) => {
+  event.preventDefault();
+  const bookAuthor = document.forms.book.author.value;
+  const bookTitle = document.forms.book.title.value;
+  const newb = new Book();
+  newb.addBook(bookTitle, bookAuthor);
+  const bookList = newb.getBooks();
+  printBookList(bookList, htmlContainer);
+});
+const books = new Book();
+if (books.getBooks()) {
+  printBookList(books.getBooks(), htmlContainer);
+}
+
+const link = document.querySelectorAll('#navbar a');
+const list = document.querySelector('#book-list');
+const form = document.querySelector('#formfields');
+const contact = document.querySelector('#contact');
+link.forEach((lnk) => {
+  lnk.addEventListener('click', () => {
+    if (lnk.id.toString() === 'book-list-lnk') {
+      list.classList.remove('hide');
+      form.classList.add('hide');
+      contact.classList.add('hide');
+    } else if (lnk.id.toString() === 'formfields-lnk') {
+      list.classList.add('hide');
+      form.classList.remove('hide');
+      contact.classList.add('hide');
+    } else if (lnk.id.toString() === 'contact-lnk') {
+      list.classList.add('hide');
+      form.classList.add('hide');
+      contact.classList.remove('hide');
+    }
+  });
+});
+
+const datetime = document.querySelector('#datetime');
+
+setInterval(() => {
+  const date = new Date();
+  datetime.innerHTML = `${date.toDateString()}, ${date.toLocaleTimeString()}`;
+}, 1000);
