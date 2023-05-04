@@ -1,7 +1,3 @@
-/* there is nothing to do brother */
-* {
-  margin: 0;
-}
 * {
   margin: 0;
   padding: 0;
@@ -28,11 +24,11 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
-  padding: .312rem;
+  padding: 0.312rem;
 }
 
 .list-items:not(:last-child) {
-  margin-bottom: .625rem;
+  margin-bottom: 0.625rem;
 }
 
 .list-items button {
@@ -48,6 +44,6 @@
   padding: 10px 22px;
 }
 
-input{
-  padding: .625rem;
+input {
+  padding: 0.625rem;
 }
